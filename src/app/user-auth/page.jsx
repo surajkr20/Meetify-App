@@ -1,13 +1,38 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
+import { Github, Loader } from "lucide-react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { toast } from "react-toastify";
 
-const page = () => {
+const Page = () => {
+  const [isLoading, setIsLoading] = useState(false); // Changed to boolean
+  const url = process.env.NEXT_PUBLIC_NEXTAUTH_URL;
+
+  const handleLogin = async (provider) => {
+    setIsLoading(true);
+    try {
+      await signIn(provider, { callbackUrl: url });
+      toast.info(`Logging in with ${provider}...`);
+    } catch (error) {
+      toast.error(`Failed to login with ${provider}, please try again`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen bg-gradient-to-r from-blue-100 to-purple-200 dark:from-gray-100">
-        {/* left side image(half of login page) */}
+    <div className="flex min-h-screen bg-gradient-to-r from-blue-100 to-purple-200 dark:from-gray-100 relative">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+          <Loader className="w-10 h-10 animate-spin text-white" />
+        </div>
+      )}
+
+      {/* Left side image (half of login page) */}
       <div className="hidden w-1/2 bg-gray-100 lg:block">
         <Image
           src={"/images/meet-image.jpg"}
@@ -18,10 +43,9 @@ const page = () => {
         />
       </div>
 
-        {/* Right side of login page */}
+      {/* Right side of login page */}
       <div className="flex flex-col justify-center w-full p-10 lg:w-1/2">
-
-        {/* text data, right-side of login page */}
+        {/* Text content */}
         <div className="max-w-md mx-auto text-center">
           <h1 className="mb-4 text-4xl font-bold">Welcome to Meetify</h1>
           <p className="mb-8 text-gray-600 dark:text-gray-100">
@@ -29,16 +53,15 @@ const page = () => {
           </p>
         </div>
 
-        {/* through google login */}
+        {/* Google Login Button */}
         <div className="space-y-4">
           <Button
             className="w-full dark:hover:bg-white dark:hover:text-black"
             variant="outline"
+            onClick={() => handleLogin("google")}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              x="0px"
-              y="0px"
               width="48"
               height="48"
               viewBox="0 0 48 48"
@@ -64,37 +87,39 @@ const page = () => {
           </Button>
         </div>
 
-        {/* throught github login and create an account*/}
+        {/* GitHub Login and Create Account Section */}
         <div className="flex flex-col space-y-4 mt-6">
-            {/* or and horizontal lines */}
-            <div className="relative w-full">
-                <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-gray-500 dark:border-gray-600"></span>
-                </div>
-                
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-gray-700">Or</span>
-                </div>
+          {/* "Or" Divider */}
+          <div className="relative w-full">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-500 dark:border-gray-600"></span>
             </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-gray-700">Or</span>
+            </div>
+          </div>
 
-            {/* github login button */}
-            <Button className="w-full bg-black text-white dark:hover:bg-gray-200 dark:bg-white dark:hover:text-black" variant="ghost">
-                <Github className="w-8 h-8 mr-2"/>
-                Login with Github
-            </Button>
+          {/* GitHub Login Button */}
+          <Button
+            className="w-full dark:hover:bg-gray-200 dark:bg-white dark:text-black"
+            variant="ghost"
+            onClick={() => handleLogin("github")} // Fixed onClick function
+          >
+            <Github className="w-8 h-8 mr-2" />
+            Login with Github
+          </Button>
 
-            {/* create account options */}
-            <p className="text-sm text-center text-gray-600 dark:text-gray-400">
-                Don't have an account? {" "}
-                <Link href="#" className="text-blue-500 hover:underline dark:text-blue-400">
-                    create now
-                </Link>
-            </p>
+          {/* Create Account Option */}
+          <p className="text-sm text-center text-gray-600 dark:text-gray-400">
+            Don't have an account?{" "}
+            <Link href="#" className="text-blue-500 hover:underline dark:text-blue-400">
+              Create now
+            </Link>
+          </p>
         </div>
-
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;
