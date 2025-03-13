@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
       <Header/>
-      <main className="flex-grow p-8 pt-32">
+      <main className="flex-grow p-8 pt-24">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="md:w-1/2 mb-8 md:mb-0">
