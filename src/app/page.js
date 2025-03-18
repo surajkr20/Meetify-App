@@ -17,7 +17,7 @@ export default function Home() {
       setIsLoading(false);
       const hasShownWelcome = localStorage.getItem('hasShownWelcome');
       if(!hasShownWelcome){
-        toast.success(`Welcome back ${session?.user?.name}!`)
+        toast.success(`Welcome back! ${session?.user?.name}`)
         localStorage.setItem('hasShownWelcome', 'true')
       }
     }else if(status === 'unauthenticated'){

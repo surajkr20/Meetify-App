@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Github, Loader } from "lucide-react";
@@ -11,6 +11,10 @@ import { toast } from "react-toastify";
 const Page = () => {
   const [isLoading, setIsLoading] = useState(false); // Changed to boolean
   const url = process.env.NEXT_PUBLIC_NEXTAUTH_URL;
+
+  useEffect(() =>{
+    localStorage.removeItem('hasShownWelcome');
+  },[])
 
   const handleLogin = async (provider) => {
     setIsLoading(true);
